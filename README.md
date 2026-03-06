@@ -47,6 +47,9 @@ The message area is fully replaced. Discord's default cozy layout is overridden 
 - Avatar decorations are hidden by default due to alignment issues with the bubble layout
 - The theme targets midnight-discord's stable class names — if midnight updates its structure, panel islands may need repainting
 - `backdrop-filter` is not available in all environments; the theme degrades gracefully to a solid dark tint
+- Reply context preview flickers like hell
+- sub menues are elsewhere 
+- Die
 
 Meow I got no idea what I'm doing but feel free to [join](https://discord.gg/tcCGWtW3Pe)
 
