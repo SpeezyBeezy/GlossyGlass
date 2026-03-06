@@ -1,0 +1,578 @@
+/**
+ * @name GlossyGlass
+ * @description WhatsApp-style glass bubbles on midnight's layout engine.
+ * @author SpeezyBeezy
+ * @version 7.0.0
+ *
+ * ARCHITECTURE:
+ *   midnight.css  → panel islands, sidebar, window controls, spacing
+ *   GlossyGlass   → visual identity, glass paint, full bubble system
+ *
+ * MESSAGE AREA: midnight's message layout is completely replaced.
+ * Everything else (panels, sidebar, user panel) defers to midnight.
+ */
+
+/* ============================================================
+   LAYER 1 — MIDNIGHT FOUNDATION
+   ============================================================ */
+@import url('https://refact0r.github.io/midnight-discord/build/midnight.css');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* ============================================================
+   MIDNIGHT CONFIGURATION
+   ============================================================ */
+body {
+    --font: 'Roboto';
+    --code-font: '';
+    font-weight: 400;
+
+    --gap: 10px;
+    --divider-thickness: 3px;
+    --border-thickness: 1px;
+
+    --animations: on;
+    --list-item-transition: 0.2s ease;
+    --dms-icon-svg-transition: 0.4s ease;
+    --border-hover-transition: 0.2s ease;
+
+    --top-bar-height: var(--gap);
+    --top-bar-button-position: titlebar;
+    --top-bar-title-position: off;
+    --subtle-top-bar-title: off;
+
+    /* macOS dots — midnight's native implementation, no custom CSS needed */
+    --custom-window-controls: on;
+    --window-control-size: 14px;
+
+    --custom-chatbar: separated;
+    --chatbar-height: 47px;
+
+    --small-user-panel: on;
+
+    /* Blur — midnight wires these up on the right elements */
+    --transparency-tweaks: on;
+    --panel-blur: on;
+    --blur-amount: 16px;
+
+    /* Background image */
+    --background-image: on;
+    --background-image-url: url('https://i.imgur.com/S3xTtqD.jpeg');
+}
+
+/* ============================================================
+   LAYER 2 — GLASSYGLASS TOKENS
+   ============================================================ */
+:root {
+    --colors: on;
+
+    /* ── Blur levels ── */
+    --blur-heavy: 22px;
+    --blur-mid:   15px;
+    --blur-light:  8px;
+
+    /* ── Glass recipe ── */
+    --glass-bg:       rgba(8, 8, 14, 0.58);
+    --glass-bg-light: rgba(8, 8, 14, 0.35);
+    --glass-border:   rgba(255, 255, 255, 0.09);
+    --glass-shadow:   0 4px 28px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.07);
+
+    /* ── Red/pink identity ── */
+    --rp-grad:   linear-gradient(135deg, #ff2d55 0%, #e8000d 55%, #bf0072 100%);
+    --rp-subtle: linear-gradient(135deg, rgba(255,45,85,0.13) 0%, rgba(191,0,114,0.07) 100%);
+    --rp-glow:   rgba(255, 45, 85, 0.22);
+
+    /* ── Midnight color overrides ──
+       IMPORTANT: only override background vars, NOT text vars.
+       bg-4 etc. are used for text on colored elements — don't break that. */
+    --bg-1: rgba(255,255,255,0.12);
+    --bg-2: rgba(255,255,255,0.07);
+    --bg-3: rgba(8,8,14,0.40);
+    --bg-4: rgba(8,8,14,0.65);
+
+    --hover:    rgba(255,255,255,0.06);
+    --active:   rgba(255, 45, 85, 0.13);
+    --active-2: rgba(255, 45, 85, 0.22);
+    --message-hover: rgba(255,255,255,0.025);
+
+    /* Accents → red/pink */
+    --accent-1: #ff6b8a;
+    --accent-2: #ff2d55;
+    --accent-3: #e0003c;
+    --accent-4: #c0002e;
+    --accent-5: #a00024;
+    --accent-new: #ff2d55;
+
+    /* Borders */
+    --border-light: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.09);
+    --button-border: rgba(255,255,255,0.10);
+
+    /* Avatar system */
+    --avatar-size: 40px;
+    --avatar-gap:  10px;
+}
+
+/* ============================================================
+   WALLPAPER
+   ============================================================ */
+.bg__960e4,
+#app-mount .bg__960e4 {
+    background: url('https://i.imgur.com/S3xTtqD.jpeg') center/cover no-repeat fixed !important;
+}
+
+/* ============================================================
+   GLASS PAINT — apply to midnight's island panels
+   backdrop-filter ONLY set once, never in :hover (prevents flicker)
+   ============================================================ */
+.guilds__5e434 {
+    backdrop-filter: blur(var(--blur-heavy)) !important;
+    background-color: var(--glass-bg) !important;
+    background-image: var(--rp-subtle) !important;
+    border-color: var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+}
+
+.sidebarList__5e434 {
+    backdrop-filter: blur(var(--blur-mid)) !important;
+    background-color: var(--glass-bg-light) !important;
+    border-color: var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+}
+
+.panels__5e434 {
+    backdrop-filter: blur(var(--blur-heavy)) !important;
+    background-color: var(--glass-bg) !important;
+    background-image: linear-gradient(to top, rgba(255,45,85,0.10) 0%, transparent 55%) !important;
+    border-color: var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+}
+
+.chatContent_f75fb0 {
+    backdrop-filter: blur(var(--blur-mid)) !important;
+    background-color: var(--glass-bg-light) !important;
+    border-color: var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+}
+
+.messagesWrapper__36d07 {
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.subtitleContainer_f75fb0,
+.container__9293f {
+    backdrop-filter: blur(var(--blur-heavy)) !important;
+    background-color: var(--glass-bg-light) !important;
+    border-color: var(--glass-border) !important;
+}
+
+.container_c8ffbb {
+    backdrop-filter: blur(var(--blur-mid)) !important;
+    background-color: var(--glass-bg-light) !important;
+    border-color: var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+}
+
+/* Chatbar */
+.channelTextArea_f75fb0,
+.wrapper__44df5 {
+    backdrop-filter: blur(var(--blur-mid)) !important;
+    background-color: var(--glass-bg) !important;
+    border-color: var(--glass-border) !important;
+    box-shadow: var(--glass-shadow) !important;
+    /* NO backdrop-filter in :hover — causes flicker */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+.channelTextArea_f75fb0:focus-within,
+.wrapper__44df5:focus-within {
+    border-color: rgba(255, 45, 85, 0.4) !important;
+    box-shadow: var(--glass-shadow), 0 0 0 1px rgba(255,45,85,0.18) !important;
+}
+
+/* ============================================================
+   ACCENT OVERRIDES
+   ============================================================ */
+
+/* Guild active pill */
+.item__58105 {
+    background: var(--rp-grad) !important;
+    box-shadow: 0 0 8px var(--rp-glow) !important;
+}
+
+/* Channel selected */
+[class*="selected"] .link__2ea32,
+.wrapper__2ea32.modeSelected__2ea32 .link__2ea32 {
+    background: rgba(255, 45, 85, 0.15) !important;
+}
+
+/* Avatar glow in user panel */
+section[aria-label="User status and settings"] [class*="avatarWrapper_"],
+section[aria-label="User status and settings"] [class*="avatar_"] {
+    box-shadow: 0 0 0 2px rgba(255,45,85,0.45), 0 0 10px rgba(255,45,85,0.2) !important;
+    transition: box-shadow 0.2s ease !important;
+}
+
+/* ============================================================
+   UI CLEANUP
+   ============================================================ */
+
+/* Remove leading element (channel header leading icon) */
+[class*="leading_"] {
+    display: none !important;
+}
+
+/* Hide name tag in user panel */
+[class*="nameTag_"] {
+    display: none !important;
+}
+
+/* Remove back/forward buttons */
+[class*="backForwardButtons"] {
+    display: none !important;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(7px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes replyIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position:  400px 0; }
+}
+
+/* Loading skeleton shimmer */
+[class*="placeholder_"],
+[class*="skeleton_"] {
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.08) 80px,
+        rgba(255,255,255,0.03) 160px
+    ) !important;
+    background-size: 400px 100% !important;
+    animation: shimmer 1.5s infinite linear !important;
+    border-radius: 6px !important;
+}
+
+/* ============================================================
+   CHAT AREA — FULL RESET BEFORE BUBBLE REBUILD
+   Midnight's layout is reset here so nothing leaks into bubbles.
+   ============================================================ */
+.scroller__36d07,
+ol[class*="scrollerInner"],
+[class*="messagesWrapper"] {
+    /* No transform, no flex tricks from midnight */
+    display: block !important;
+    background: transparent !important;
+}
+
+/* 8% indent on each side */
+ol[class*="scrollerInner"] {
+    padding-left: 2.4vw !important;
+    padding-right: 2.4vw !important;
+}
+
+/* ============================================================
+   BUBBLE SYSTEM
+   
+   Confirmed DOM structure (from HTML inspection):
+   
+   li.messageListItem
+     └── [role="article"]  (.message__5126c .wrapper_c19a55)
+           ├── [id*="message-reply-context"]   ← block, above bubble
+           ├── [class*="contents_"]            ← THE BUBBLE
+           │     ├── [class*="avatar_"]        ← first child (has decoration wrapper)
+           │     ├── [class*="header_"]        ← name + timestamp
+           │     └── [class*="messageContent_"]
+           ├── [id*="message-accessories"]     ← attachments, embeds
+           └── [class*="buttonContainer_"]     ← hover actions
+   
+   Strategy:
+   - [role="article"] = block container, full width
+   - [class*="contents_"] = flex ROW, fit-content width
+   - avatar = static flex item (left)
+   - > *:not(avatar) = flex COLUMN (right side: header above, content below)
+   ============================================================ */
+
+/* Message row — block, full width, no flex */
+[role="article"] {
+    display: block !important;
+    background: transparent !important;
+    padding: 1px 0 !important;
+    animation: msgIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+}
+
+/* THE BUBBLE */
+/* ── ARTICLE ROW: position:relative so avatar can sit absolute-left ── */
+[role="article"] {
+    position: relative !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 1px 0 1px calc(var(--avatar-size) + var(--avatar-gap)) !important;
+    animation: msgIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+}
+
+/* ── THE BUBBLE: simple block, no grid, no avatar inside ── */
+[class*="contents_"] {
+    /* Simple block — header stacks above content naturally */
+    display: block !important;
+    text-align: left !important;
+
+    /* Glass visual */
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--blur-mid)) !important;
+    -webkit-backdrop-filter: blur(var(--blur-mid)) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 4px 18px 18px 18px !important;
+    box-shadow: var(--glass-shadow) !important;
+    padding: 6px 14px 6px 12px !important;
+
+    /* Size */
+    width: fit-content !important;
+    max-width: 68% !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+    position: relative !important;
+    margin: 0 !important;
+}
+
+/* Avatar floats to the LEFT of the bubble.
+   Article = position:relative container.
+   Avatar = absolute, sits in the left lane.
+   Bubble = gets margin-left equal to avatar lane width. */
+[class*="contents_"] > img[class*="avatar_"] {
+    position: absolute !important;
+    left: calc(-1 * var(--avatar-size) - var(--avatar-gap)) !important;
+    top: 0 !important;
+    width: var(--avatar-size) !important;
+    height: var(--avatar-size) !important;
+    min-width: var(--avatar-size) !important;
+    min-height: var(--avatar-size) !important;
+    max-width: var(--avatar-size) !important;
+    max-height: var(--avatar-size) !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.09), 0 2px 8px rgba(0,0,0,0.5) !important;
+    z-index: 2 !important;
+}
+
+/* Avatar decoration ring — anchored to the img's position */
+[class*="contents_"] [class*="avatarDecoration"],
+[class*="contents_"] [class*="decoration_"] {
+    position: absolute !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    /* Align with the avatar img top-left corner */
+    top: 10px !important;   /* matches margin-top on avatar */
+    left: 10px !important;  /* matches bubble padding-left */
+    width: var(--avatar-size) !important;
+    height: var(--avatar-size) !important;
+}
+
+/* GRID LAYOUT: avatar=col1 spanning rows, header=col2 row1, content=col2 row2.
+   This is the only reliable way to guarantee header and message never share a line. */
+
+
+[class*="contents_"] > img[class*="avatar_"] {
+    grid-column: 1 !important;
+    grid-row: 1 / 3 !important;
+    align-self: start !important;
+}
+
+[class*="contents_"] > [class*="header_"] {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin-bottom: 2px !important;
+}
+
+[class*="messageContent_"] {
+    display: block !important;
+    min-width: 0 !important;
+    word-break: break-word !important;
+    text-align: left !important;
+    color: rgba(255, 255, 255, 0.92) !important;
+    line-height: 1.45 !important;
+    margin: 0 !important;
+}
+
+/* Timestamp that appears on continued (non-grouped) messages —
+   it's a sibling of contents_, pull it into the visual bubble area */
+[class*="message_"] [class*="timestamp_"]:not([class*="header_"] *) {
+    display: block !important;
+    color: rgba(255,255,255,0.42) !important;
+    font-size: 0.65rem !important;
+    padding: 2px 0 0 calc(var(--avatar-size) + var(--avatar-gap) + 10px) !important;
+    margin-top: 1px !important;
+}
+
+/* Accessories (embeds, attachments) — keep below bubble */
+[id*="message-accessories"] {
+    margin-top: 4px !important;
+}
+
+/* ============================================================
+   REPLY PREVIEW
+   Stacks above [class*="contents_"] in block flow naturally.
+   ============================================================ */
+[id*="message-reply-context"] {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+
+    width: fit-content !important;
+    max-width: 72% !important;
+    margin: 0 0 4px 0 !important;
+
+    background: rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(calc(var(--blur-light) * 1.2)) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-left: 3px solid rgba(255, 45, 85, 0.55) !important;
+    border-radius: 4px 10px 10px 4px !important;
+    padding: 3px 8px !important;
+
+    animation: replyIn 0.2s ease both !important;
+}
+
+[class*="repliedMessageClickableSpine"] {
+    display: none !important;
+}
+
+[id*="message-reply-context"] [class*="replyAvatar"] {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+    position: static !important;
+}
+
+[class*="repliedTextContent"] {
+    opacity: 0.78 !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 320px !important;
+}
+
+/* ============================================================
+   MENTION HIGHLIGHT
+   ============================================================ */
+[class*="mentioned"] [class*="contents_"] {
+    border-left: 4px solid #ff2d55 !important;
+    background: rgba(255, 45, 85, 0.10) !important;
+    box-shadow: 0 0 18px rgba(255,45,85,0.12) !important;
+}
+
+/* ============================================================
+   MISC POLISH
+   ============================================================ */
+
+/* Reactions */
+[class*="reaction_"] {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 99px !important;
+    backdrop-filter: blur(var(--blur-light)) !important;
+    transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+[class*="reaction_"]:hover {
+    background: rgba(255,45,85,0.12) !important;
+    border-color: rgba(255,45,85,0.3) !important;
+}
+
+/* Code blocks */
+code, pre {
+    background: rgba(0,0,0,0.45) !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 6px !important;
+}
+
+/* Inline timestamps */
+[class*="timestamp_"] {
+    color: rgba(255, 255, 255, 0.52) !important;
+    font-size: 0.68rem !important;
+}
+
+
+/* Fix: Discord adds padding-left to markup wrapper — kills the gap */
+[class*="markup_"] {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Avatar decoration disabled — alignment issues */
+[class*="avatarDecoration"],
+[class*="decoration_"],
+[class*="avatarDecorationPreview"] {
+    display: none !important;
+}
+
+/* Trailing toolbar — wider so more buttons fit */
+[class*="trailing_"] {
+    min-width: 220px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+}
+
+/* Remove left bar/stripe on reply and mention messages */
+[class*="cozyMessage"] {
+    border-left: none !important;
+}
+[class*="cozyMessage"]::before,
+[class*="cozyMessage"]::after {
+    content: none !important;
+    display: none !important;
+    border: none !important;
+}
+
+/* Also kill midnight's divider-thickness left bar on replies/mentions */
+[class*="mentioned"]::before,
+[class*="replying"]::before,
+[class*="hasReply"]::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Reply preview flicker fix:
+   backdrop-filter on an element that has hover children causes repaint.
+   Lock the blur statically and only allow opacity/color transitions. */
+[id*="message-reply-context"] {
+    backdrop-filter: blur(calc(var(--blur-light) * 1.2)) !important;
+    -webkit-backdrop-filter: blur(calc(var(--blur-light) * 1.2)) !important;
+    will-change: auto !important;
+    transform: translateZ(0) !important;
+    transition: border-color 0.15s ease !important;
+}
+[id*="message-reply-context"] * {
+    /* Prevent any child hover from triggering a blur repaint on the parent */
+    transition: color 0.15s ease, opacity 0.15s ease !important;
+}
+[id*="message-reply-context"]:hover {
+    /* No backdrop-filter change on hover — that's what causes the flicker */
+    border-color: rgba(255, 45, 85, 0.75) !important;
+}
+/* Scrollbars */
+::-webkit-scrollbar { width: 3px !important; }
+::-webkit-scrollbar-track { background: transparent !important; }
+::-webkit-scrollbar-thumb {
+    background: rgba(255,45,85,0.35) !important;
+    border-radius: 99px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,45,85,0.6) !important;
+}
