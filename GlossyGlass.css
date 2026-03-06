@@ -187,35 +187,29 @@ body {
     box-shadow: var(--glass-shadow), 0 0 0 1px rgba(255,45,85,0.18) !important;
 }
 
-/* Context menus */
+/* Context menus — appearance only, never touch layout/transform/overflow */
 [role="menu"],
 [class*="menu_"] {
-    background: rgba(12, 12, 18, 0.97) !important;
+    background: rgba(12, 12, 18, 0.96) !important;
     backdrop-filter: blur(var(--blur-heavy)) !important;
+    -webkit-backdrop-filter: blur(var(--blur-heavy)) !important;
     border: 1px solid var(--glass-border) !important;
     border-radius: 8px !important;
-    /* Critical: no transform on menu containers — breaks submenu positioning */
-    transform: none !important;
-    /* Don't clip submenus */
-    overflow: visible !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+    color: rgba(255,255,255,0.88) !important;
 }
-[role="menuitem"]:hover {
+[role="menuitem"] {
+    border-radius: 4px !important;
+    transition: background 0.1s ease !important;
+}
+[role="menuitem"]:hover,
+[role="menuitem"]:focus {
     background: rgba(255, 45, 85, 0.18) !important;
+    color: #fff !important;
 }
-
-/* Submenu popout — must be able to escape the parent bounds */
-[class*="menu_"][class*="flexible_"],
-[class*="submenu_"],
-[class*="layerContainer_"] > [role="menu"] {
-    position: fixed !important;
-    transform: none !important;
-    overflow: visible !important;
-}
-
-/* Ensure the layer/popout container holding submenus isn't clipped */
-[class*="layerContainer_"] {
-    overflow: visible !important;
-    transform: none !important;
+/* Menu separators */
+[class*="separator_c1e9c4"] {
+    background: rgba(255,255,255,0.08) !important;
 }
 
 /* ============================================================
@@ -470,8 +464,7 @@ ol[class*="scrollerInner"] {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     max-width: 320px !important;
-    /* Prevent child hover from triggering parent blur repaint */
-    pointer-events: none !important;
+    /* compositor layer only — NO pointer-events:none, clicks must work */
     transform: translateZ(0) !important;
     backface-visibility: hidden !important;
 }
@@ -508,4 +501,25 @@ code, pre {
 }
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255,45,85,0.6) !important;
+}
+
+/* Panel text readability — subtle dark shade on sidebar text areas */
+[class*="sidebarList_"] [class*="name_"],
+[class*="sidebarList_"] [class*="channel_"],
+[class*="sidebarList_"] [class*="link_"],
+[class*="guilds_"] [class*="acronym_"],
+section[aria-label="User status and settings"] [class*="username_"],
+section[aria-label="User status and settings"] [class*="subText_"] {
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.8) !important;
+}
+
+/* Slightly darker bg on panels for readability without making them opaque */
+.sidebarList__5e434 {
+    background-color: rgba(8, 8, 14, 0.48) !important;
+}
+.panels__5e434 {
+    background-color: rgba(8, 8, 14, 0.60) !important;
+}
+.guilds__5e434 {
+    background-color: rgba(8, 8, 14, 0.60) !important;
 }
