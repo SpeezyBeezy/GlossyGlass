@@ -50,6 +50,6 @@ The message area is fully replaced. Discord's default cozy layout is overridden 
 
 Meow I got no idea what I'm doing but feel free to [join](https://discord.gg/tcCGWtW3Pe)
 
-##( Credits
+## Credits
 
 Layout engine: [midnight-discord](https://github.com/refact0r/midnight-discord) by refact0r
