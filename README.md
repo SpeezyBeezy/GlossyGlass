@@ -1,5 +1,8 @@
 # GlossyGlass
 
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/6a46de8e-c901-4519-b94e-065b98774319" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/9d100614-55d0-4d72-beef-919327bc723f" />
+
 A Discord theme built on [midnight-discord](https://github.com/refact0r/midnight-discord) that replaces the default message layout with WhatsApp-style glass bubbles and a red/pink gradient identity.
 
 ## Requirements
