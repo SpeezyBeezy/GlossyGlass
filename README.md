@@ -51,7 +51,7 @@ The message area is fully replaced. Discord's default cozy layout is overridden 
 - sub menues are elsewhere 
 - Die
 
-Meow I got no idea what I'm doing but feel free to [join](https://discord.gg/tcCGWtW3Pe)
+Meow I got no idea what I'm doing
 
 ## Credits
 
